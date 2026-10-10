@@ -1,0 +1,135 @@
+﻿<div class="container my-5">
+    <h2 class="mb-4">Guest Management</h2>
+    <div class="card mb-4">
+        <div class="card-header fw-bold" data-bind="text:isEditing() ? 'Edit Guest' : 'Create Guest'"></div>
+
+        <div class="card-body">
+            <form data-bind="submit:saveGuest">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Guest Name</label>
+                        <input type="text" class="form-control" data-bind="value:guestName" required />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Contact</label>
+                        <input type="text" class="form-control" data-bind="value:contact" required />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Checkout Date</label>
+                        <input type="date" class="form-control" data-bind="value:checkOut" required />
+                    </div>
+
+                    <div class="col-md-3 d-flex align-items-center mt-4">
+                        <div class="form-check">
+                            <input type="checkbox" id="isPaid" data-bind="checked:isPaid" class="form-check-input" />
+                            <label class="form-check-label" for="isPaid">Is Paid</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label class="form-label">Guest Image</label>
+                        <input type="file" id="imageFileInput" class="form-control" data-bind="fileUpload:selectedFile, imagePreview:imagePreviewUrl" accept="image/*" />
+                    </div>
+
+                    <div class="col-md-6" data-bind="if: $root.imagePreviewUrl() || $root.imageUrl()">
+                        <label class="form-label d-block">Image Preview</label>
+                        <img data-bind="attr: { src: $root.imagePreviewUrl() || $root.imageUrl() }" style="max-height: 100px; max-width: 100%; object-fit: contain" class="img-thumbnail rounded" alt="Image Preview" />
+                    </div>
+                </div>
+
+                <h5 class="mt-4">Guest Facilities</h5>
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Facility</th>
+                            <th>Total Visits</th>
+                            <th>Unit Charge</th>
+                            <th>Subtotal</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody data-bind="foreach: $root.guestFacilities">
+                        <tr>
+                            <td>
+                                <select class="form-select" data-bind="
+                                        options:$root.facilities,
+                                        optionsText:'FacilityName',
+                                        optionsValue:'FacilityId',
+                                        value:FacilityId,
+                                        optionsCaption:'----- Select Facility -----'"
+                                        required>
+                                </select>
+                            </td>
+
+                            <td>
+                                <input type="number" class="form-control" data-bind="value:TotalVisits" min="1" required />
+                            </td>
+
+                            <td>
+                                <input type="number" class="form-control" data-bind="value:Price" step="0.10" required />
+                            </td>
+
+                            <td>
+                                $<span data-bind="text:Subtotal().toFixed(2)"></span>
+                            </td>
+
+                            <td>
+                                <button type="button" class="btn btn-danger" data-bind="click:$parent.removeGuestFacility">Remove</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <button type="button" class="btn btn-sm btn-success mb-3" data-bind="click:addGuestFacility">Add Facility</button>
+
+                <div>
+                    <button type="submit" class="btn btn-primary" data-bind="text:isEditing() ? 'Update Guest' : 'Save Guest'"></button>
+                    <button type="button" class="btn btn-outline-secondary" data-bind="click:resetForm">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <h4>Guests List</h4>
+    <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Image</th>
+                <th>Guest Name</th>
+                <th>Contact</th>
+                <th>Checkout Date</th>
+                <th>Payment Status</th>
+                <th>Facilities Count</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody data-bind="foreach:guests">
+            <tr>
+                <td>
+                    <img data-bind="attr: {src:ImageUrl}" style="width: 40px; height: 40px; object-fit: cover;" class="rounded" alt="Image" />
+                </td>
+                <td data-bind="text:GuestName"></td>
+                <td data-bind="text:Contact"></td>
+                <td data-bind="text:CheckOut ? CheckOut.substring(0,10) : ''"></td>
+                <td>
+                    <span class="badge" data-bind="text:IsPaid ? 'Paid' : 'Unpaid', css:IsPaid ? 'bg-success' : 'bg-warning'"></span>
+                </td>
+                <td data-bind="text:GuestFacilities ? GuestFacilities.length : 0"></td>
+                <td>
+                    <button class="btn btn-sm btn-info text-white" data-bind="click:$parent.editGuest">Edit</button>
+                    <button class="btn btn-sm btn-danger" data-bind="click:$parent.deleteGuest">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/knockout-3.5.3.js"></script>
+<script src="~/Scripts/app.js?v=1.1"></script>
